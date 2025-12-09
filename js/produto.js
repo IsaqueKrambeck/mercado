@@ -1,8 +1,8 @@
-// product.js
+
 document.addEventListener('DOMContentLoaded', async () => {
   const id = qs('id');
   const buy = qs('buy');
-  const container = document.getElementById('product-detail');
+  const container = document.getElementById('detalheProduto');
   const navLogin = document.getElementById('nav-login-2');
 
   if (isLoggedIn()) {
@@ -50,15 +50,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('btn-buy').addEventListener('click', () => {
       const returnUrl = encodeURIComponent(location.pathname + location.search);
       if (isLoggedIn()) {
-        // ir para checkout com id
+       
         location.href = `checkout.html?productId=${p.id}`;
       } else {
-        // ir para login e após login voltar ao checkout do produto
+        
         location.href = `login.html?return=${encodeURIComponent('checkout.html?productId='+p.id)}`;
       }
     });
 
-    // se a url veio com &buy=true, já simula clique
+    
     if (buy === 'true') {
       document.getElementById('btn-buy').click();
     }

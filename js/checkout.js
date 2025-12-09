@@ -1,26 +1,26 @@
-// checkout.js
+
 document.addEventListener('DOMContentLoaded', async () => {
   const productId = qs('productId');
   if (!isLoggedIn()) {
-    // redireciona para login, passando return para voltar aqui
+
     location.href = `login.html?return=${encodeURIComponent(location.pathname + location.search)}`;
     return;
   }
 
-  const summary = document.getElementById('product-summary');
-  const payMethod = document.getElementById('pay-method');
-  const cardForm = document.getElementById('card-form');
-  const pixPanel = document.getElementById('pix-panel');
+  const sumario = document.getElementById('sumarioProduto');
+  const metodoPagamento = document.getElementById('pay-method');
+  const cartaoForm = document.getElementById('card-form');
+  const pix = document.getElementById('pix-panel');
   const btnConfirm = document.getElementById('confirm-btn');
 
-  // logout button
+
   document.getElementById('btn-logout').addEventListener('click', () => { setLoggedOut(); location.href='index.html'; });
 
   let product = null;
   try {
     const res = await fetch(`https://dummyjson.com/products/${productId}`);
     product = await res.json();
-    summary.innerHTML = `
+    sumario.innerHTML = `
       <div class="card p-3">
         <h5>${product.title}</h5>
         <p>${product.description}</p>
@@ -28,23 +28,23 @@ document.addEventListener('DOMContentLoaded', async () => {
       </div>
     `;
   } catch (err) {
-    summary.innerHTML = '<div class="alert alert-danger">Erro ao buscar produto.</div>';
+    sumario.innerHTML = '<div class="alert alert-danger">Erro ao buscar produto.</div>';
   }
 
-  // alterar painéis
-  payMethod.addEventListener('change', () => {
-    if (payMethod.value === 'card') {
-      cardForm.classList.remove('d-none');
-      pixPanel.classList.add('d-none');
+  
+  metodoPagamento.addEventListener('change', () => {
+    if (metodoPagamento.value === 'card') {
+      cartaoForm.classList.remove('d-none');
+      pix.classList.add('d-none');
       btnConfirm.disabled = true;
     } else {
-      cardForm.classList.add('d-none');
-      pixPanel.classList.remove('d-none');
+      cartaoForm.classList.add('d-none');
+      pix.classList.remove('d-none');
       btnConfirm.disabled = true;
     }
   });
 
-  // Validação cartão
+  
   const ccNumber = document.getElementById('cc-number');
   const ccError = document.getElementById('cc-error');
 
@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   ccNumber.addEventListener('input', () => {
-    // format simple: add spaces every 4 digits
+  
     let v = ccNumber.value.replace(/\D/g,'').slice(0,19);
     v = v.replace(/(.{4})/g,'$1 ').trim();
     ccNumber.value = v;
@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       pixCountdown.textContent = `Redirecionando em ${seconds}s...`;
       if (seconds <= 0) {
         clearInterval(t);
-        // salvar os dados da compra em sessionStorage e redirecionar
+  
         const purchase = {
           productId: productId,
           title: product?.title || '',
@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }, 1000);
   });
 
-  // Confirm click (cartão)
+ 
   btnConfirm.addEventListener('click', () => {
     if (payMethod.value === 'card') {
       const purchase = {
@@ -122,6 +122,5 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  // Se cartão por padrão, desativa botão até validar
   if (payMethod.value === 'card') btnConfirm.disabled = true;
 });
