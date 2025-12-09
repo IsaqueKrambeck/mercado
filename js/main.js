@@ -1,6 +1,7 @@
-// main.js - utilidades comuns
+
 function qs(name, url = location.href) {
-  name = name.replace(/[[]]/g, "\\$&");
+ 
+  name = name.replace(/[\[\]]/g, "\\$&");
   const regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)");
   const results = regex.exec(url);
   if (!results) return null;
@@ -10,7 +11,7 @@ function qs(name, url = location.href) {
 
 function setLoggedIn(email) {
   localStorage.setItem('loggedIn', 'true');
-  localStorage.setItem('userEmail', email);
+  if (email) localStorage.setItem('userEmail', email);
 }
 
 function setLoggedOut() {
@@ -22,7 +23,6 @@ function isLoggedIn() {
   return localStorage.getItem('loggedIn') === 'true';
 }
 
-// Luhn check for card number (only digits)
 function luhnCheck(number) {
   const nums = number.replace(/\D/g,'');
   let sum = 0; let alt = false;
@@ -34,7 +34,7 @@ function luhnCheck(number) {
   return (sum % 10) === 0;
 }
 
-// Simple helper to format currency
 function fmtCurrency(n) {
+  if (typeof n !== 'number') n = Number(n) || 0;
   return n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }

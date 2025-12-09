@@ -2,23 +2,28 @@
 document.addEventListener('DOMContentLoaded', async () => {
   const productId = qs('productId');
   if (!isLoggedIn()) {
-
+  
     location.href = `login.html?return=${encodeURIComponent(location.pathname + location.search)}`;
     return;
   }
 
   const sumario = document.getElementById('sumarioProduto');
-  const metodoPagamento = document.getElementById('pay-method');
+  const metodoPagamento = document.getElementById('pay-method'); 
   const cartaoForm = document.getElementById('card-form');
   const pix = document.getElementById('pix-panel');
   const btnConfirm = document.getElementById('confirm-btn');
 
+  document.getElementById('btn-logout')?.addEventListener('click', () => { setLoggedOut(); location.href='index.html'; });
 
-  document.getElementById('btn-logout').addEventListener('click', () => { setLoggedOut(); location.href='index.html'; });
+  if (!productId) {
+    sumario.innerHTML = '<div class="alert alert-warning">Produto não informado.</div>';
+    return;
+  }
 
   let product = null;
   try {
     const res = await fetch(`https://dummyjson.com/products/${productId}`);
+    if (!res.ok) throw new Error('Produto não encontrado');
     product = await res.json();
     sumario.innerHTML = `
       <div class="card p-3">
@@ -29,10 +34,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     `;
   } catch (err) {
     sumario.innerHTML = '<div class="alert alert-danger">Erro ao buscar produto.</div>';
+    console.error(err);
   }
 
   
-  metodoPagamento.addEventListener('change', () => {
+  function updatePaymentVisibility() {
     if (metodoPagamento.value === 'card') {
       cartaoForm.classList.remove('d-none');
       pix.classList.add('d-none');
@@ -42,9 +48,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       pix.classList.remove('d-none');
       btnConfirm.disabled = true;
     }
-  });
+  }
 
-  
+  metodoPagamento.addEventListener('change', updatePaymentVisibility);
+  updatePaymentVisibility();
+
   const ccNumber = document.getElementById('cc-number');
   const ccError = document.getElementById('cc-error');
 
@@ -63,7 +71,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   ccNumber.addEventListener('input', () => {
-  
     let v = ccNumber.value.replace(/\D/g,'').slice(0,19);
     v = v.replace(/(.{4})/g,'$1 ').trim();
     ccNumber.value = v;
@@ -74,7 +81,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById(id).addEventListener('input', validateCardInputs);
   });
 
-  // PIX flow
+  
   const btnPix = document.getElementById('btn-generate-pix');
   const pixCodeEl = document.getElementById('pix-code');
   const pixCountdown = document.getElementById('pix-countdown');
@@ -91,7 +98,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       pixCountdown.textContent = `Redirecionando em ${seconds}s...`;
       if (seconds <= 0) {
         clearInterval(t);
-  
+
         const purchase = {
           productId: productId,
           title: product?.title || '',
@@ -101,14 +108,13 @@ document.addEventListener('DOMContentLoaded', async () => {
           pixCode: code
         };
         sessionStorage.setItem('lastPurchase', JSON.stringify(purchase));
-        location.href = 'approved.html';
+        location.href = 'aprovacao.html';
       }
     }, 1000);
   });
 
- 
   btnConfirm.addEventListener('click', () => {
-    if (payMethod.value === 'card') {
+    if (metodoPagamento.value === 'card') {
       const purchase = {
         productId: productId,
         title: product?.title || '',
@@ -118,9 +124,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         cardName: document.getElementById('cc-name').value
       };
       sessionStorage.setItem('lastPurchase', JSON.stringify(purchase));
-      location.href = 'approved.html';
+      location.href = 'aprovacao.html';
     }
   });
-
-  if (payMethod.value === 'card') btnConfirm.disabled = true;
 });

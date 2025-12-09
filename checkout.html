@@ -22,20 +22,20 @@
 
     <div class="mb-3">
       <label class="form-label">Método de pagamento</label>
-      <select id="-metodoPagamento" class="form-select">
+      <select id="pay-method" class="form-select">
         <option value="card">Cartão de crédito</option>
         <option value="pix">Pix</option>
       </select>
     </div>
 
-    <div id="cartaoForm" class="card p-3 mb-3">
+    <div id="card-form" class="card p-3 mb-3">
       <div class="mb-2">
         <label>Nome do cartão</label>
         <input id="cc-name" class="form-control" />
       </div>
       <div class="mb-2">
-        <label>Número do cartã<summary></summary></label>
-        <input id="cc-number" class="f<summary></summary>rm-control" maxlength="19" placeholder="1234 5678 9012 3456"/>
+        <label>Número do cartão</label>
+        <input id="cc-number" class="form-control" maxlength="19" placeholder="1234 5678 9012 3456"/>
         <div id="cc-error" class="form-text text-danger d-none">Número inválido</div>
       </div>
       <div class="row">

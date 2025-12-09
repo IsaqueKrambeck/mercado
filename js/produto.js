@@ -5,13 +5,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   const container = document.getElementById('detalheProduto');
   const navLogin = document.getElementById('nav-login-2');
 
-  if (isLoggedIn()) {
-    navLogin.textContent = 'Logout';
-    navLogin.href = '#';
-    navLogin.addEventListener('click', (e)=>{
-      e.preventDefault();
-      setLoggedOut(); location.reload();
-    });
+ 
+  if (navLogin) {
+    if (isLoggedIn()) {
+      navLogin.textContent = 'Logout';
+      navLogin.href = '#';
+      navLogin.addEventListener('click', (e)=>{
+        e.preventDefault();
+        setLoggedOut(); location.reload();
+      });
+    }
   }
 
   if (!id) {
@@ -27,9 +30,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     container.innerHTML = `
       <div class="row g-3">
         <div class="col-md-6">
-          <img src="${p.images[0] || p.thumbnail}" class="img-fluid rounded" alt="${p.title}">
+          <img src="${p.images?.[0] || p.thumbnail}" class="img-fluid rounded" alt="${p.title}">
           <div class="mt-2 d-flex gap-2">
-            ${p.images.slice(0,4).map(i=>`<img src="${i}" style="width:80px;height:80px;object-fit:cover" />`).join('')}
+            ${ (p.images || []).slice(0,4).map(i=>`<img src="${i}" style="width:80px;height:80px;object-fit:cover" />`).join('') }
           </div>
         </div>
         <div class="col-md-6">
@@ -47,19 +50,18 @@ document.addEventListener('DOMContentLoaded', async () => {
       </div>
     `;
 
-    document.getElementById('btn-buy').addEventListener('click', () => {
+    const btnBuy = document.getElementById('btn-buy');
+    btnBuy.addEventListener('click', () => {
       const returnUrl = encodeURIComponent(location.pathname + location.search);
       if (isLoggedIn()) {
-       
         location.href = `checkout.html?productId=${p.id}`;
       } else {
-        
         location.href = `login.html?return=${encodeURIComponent('checkout.html?productId='+p.id)}`;
       }
     });
 
-    
     if (buy === 'true') {
+  
       document.getElementById('btn-buy').click();
     }
 

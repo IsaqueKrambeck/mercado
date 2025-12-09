@@ -1,4 +1,4 @@
-// index.js
+
 document.addEventListener('DOMContentLoaded', async () => {
   const list = document.getElementById('product-list');
   const navLogin = document.getElementById('nav-login');
@@ -13,9 +13,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   try {
     const res = await fetch('https://dummyjson.com/products');
+    if (!res.ok) throw new Error('Erro na API');
     const data = await res.json();
-    const products = data.products.slice(0, 8); // pega alguns para mostrar; vamos linkar só 2
-    products.forEach((p, i) => {
+    const products = data.products.slice(0, 8);
+    products.forEach((p) => {
       const col = document.createElement('div');
       col.className = 'col-12 col-md-6 col-lg-4';
       col.innerHTML = `
@@ -27,9 +28,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             <p class="mb-1 small">Avaliação: ${p.rating} ★</p>
             <p class="mb-2 small text-muted">Desconto: ${p.discountPercentage}%</p>
             <div class="mt-auto d-flex justify-content-between">
-              <a class="btn btn-sm btn-outline-primary" href="product.html?id=${p.id}">Detalhar</a>
-              <!-- comprar só para usuários; o processo fará redirect condicional -->
-              <a class="btn btn-sm btn-success" href="product.html?id=${p.id}&buy=true">Comprar</a>
+              <a class="btn btn-sm btn-outline-primary" href="produto.html?id=${p.id}">Detalhar</a>
+              <!-- usar produto.html com parâmetro buy -->
+              <a class="btn btn-sm btn-success" href="produto.html?id=${p.id}&buy=true">Comprar</a>
             </div>
           </div>
         </div>

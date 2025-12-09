@@ -1,4 +1,4 @@
-// approved.js
+
 document.addEventListener('DOMContentLoaded', async () => {
   const report = document.getElementById('report');
   const btnPrint = document.getElementById('btn-print');
@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
   const p = JSON.parse(raw);
 
-  // prazo de frete: random entre 3 e 10 dias
   const prazo = Math.floor(Math.random() * 8) + 3;
   report.innerHTML = `
     <p><strong>Código do produto:</strong> ${p.productId}</p>
